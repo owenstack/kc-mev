@@ -1,6 +1,6 @@
 import { useState } from "react";
 import "./App.css";
-import { Button } from "./components/ui/button";
+import { Button } from "./ui/button";
 import WebApp from "@twa-dev/sdk";
 import { env } from "@/lib/env";
 
