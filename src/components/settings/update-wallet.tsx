@@ -21,8 +21,10 @@ import { LocalWalletDialog } from "./local-wallet-dialog";
 export function UpdateWallet() {
 	const { data, refetch } = useSession();
 	const { address } = useAccount();
-	const mnemonicAddress = mnemonicClient(data?.user.mnemonic ?? "").account
-		.address;
+	const [mnemonicAddress, setMnemonicAddress] = useState("");
+	if (data?.user.mnemonic) {
+		setMnemonicAddress(mnemonicClient(data?.user.mnemonic).account.address);
+	}
 	const [notif, setNotif] = useState(false);
 	const [tfa, setTfa] = useState(false);
 	const [loading, setLoading] = useState(false);

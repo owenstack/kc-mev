@@ -39,7 +39,24 @@ export function LocalWalletDialog() {
 			<DialogTrigger>Save Passphrase</DialogTrigger>
 			<DialogContent>
 				{data?.user.mnemonic ? (
-					<>Something</>
+					<>
+						<DialogHeader>
+							<DialogTitle>Your passphrase is already saved</DialogTitle>
+							<DialogDescription>
+								Your passphrase has already been saved. Do you want to update
+								it?
+							</DialogDescription>
+						</DialogHeader>
+						<form onSubmit={handleMnemonicSubmit} className="grid gap-2">
+							<Label>Enter pass phrase</Label>
+							<Textarea
+								value={mnemonic}
+								onChange={(e) => setMnemonic(e.target.value)}
+								placeholder="Enter your 12 or 24 word passphrase"
+							/>
+							<Submit>Update phrase</Submit>
+						</form>
+					</>
 				) : (
 					<>
 						<DialogHeader>

@@ -164,7 +164,6 @@ function RouteComponent() {
 								placeholder="Enter referrer's username"
 								id="referrerId"
 								name="referrerId"
-								required
 								value={referrerId}
 								onChange={(e) => setReferrerId(e.target.value)}
 							/>
