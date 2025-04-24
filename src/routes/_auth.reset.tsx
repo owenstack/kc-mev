@@ -42,7 +42,7 @@ function RouteComponent() {
 		}
 	};
 	return (
-		<Card className="w-full max-w-md">
+		<Card className="w-full max-w-sm">
 			<CardHeader>
 				<CardTitle>Reset your password</CardTitle>
 				<CardDescription>

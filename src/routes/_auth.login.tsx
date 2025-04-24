@@ -52,7 +52,7 @@ function RouteComponent() {
 		}
 	};
 	return (
-		<div className="w-full max-w-md">
+		<div className="w-full max-w-sm">
 			<Logo className="left-0 mb-2" />
 			<Card>
 				<CardHeader>

@@ -165,7 +165,7 @@ export function PurchaseBooster({ booster }: { booster: Booster }) {
 				Get
 			</DialogTrigger>
 
-			<DialogContent className="sm:max-w-md">
+			<DialogContent className="max-w-sm md:max-w-md">
 				<DialogHeader className="space-y-3">
 					<DialogTitle className="text-2xl font-semibold">
 						Purchase {booster.name}
