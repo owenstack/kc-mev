@@ -150,7 +150,7 @@ export function Withdraw() {
 				}),
 			});
 
-			await fetch(`${baseURL}/api/withdraw?${searchParams}`, {
+			await fetch(`${baseURL}/api/transactions/create?${searchParams}`, {
 				method: "POST",
 				credentials: "include",
 				headers: {

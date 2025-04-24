@@ -47,4 +47,6 @@ export const {
 	signOut,
 	resetPassword,
 	updateUser,
+	admin,
+	deleteUser,
 } = auth;

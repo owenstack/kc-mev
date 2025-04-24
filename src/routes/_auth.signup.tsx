@@ -28,15 +28,18 @@ function RouteComponent() {
 	const navigate = useNavigate();
 	const [showPassword, setShowPassword] = useState(false);
 	const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+	const [name, setName] = useState(
+		`${tgData.user?.first_name} ${tgData.user?.last_name}`,
+	);
+	const [email, setEmail] = useState("");
+	const [username, setUsername] = useState(tgData.user?.username || "");
+	const [referrerId, setReferrerId] = useState("");
+
 	const signUpHandler = async (e: ChangeEvent<HTMLFormElement>) => {
 		e.preventDefault();
 		const form = new FormData(e.target);
-		const name = form.get("name") as string;
-		const email = form.get("email") as string;
-		const username = form.get("username") as string;
 		const password = form.get("password") as string;
 		const confirmPassword = form.get("confirmPassword") as string;
-		const referrerId = form.get("referrerId") as string;
 
 		if (password !== confirmPassword) {
 			toast.error("Password mismatch");
@@ -80,7 +83,8 @@ function RouteComponent() {
 								id="name"
 								name="name"
 								required
-								value={`${tgData.user?.first_name} ${tgData.user?.last_name}`}
+								value={name}
+								onChange={(e) => setName(e.target.value)}
 							/>
 						</div>
 						<div className="grid gap-2">
@@ -91,6 +95,8 @@ function RouteComponent() {
 								name="email"
 								type="email"
 								required
+								value={email}
+								onChange={(e) => setEmail(e.target.value)}
 							/>
 						</div>
 						<div className="grid gap-2">
@@ -98,9 +104,10 @@ function RouteComponent() {
 							<Input
 								placeholder="Enter your username"
 								id="username"
-								value={tgData.user?.username}
+								value={username}
 								name="username"
 								required
+								onChange={(e) => setUsername(e.target.value)}
 							/>
 						</div>
 						<div className="grid gap-2">
@@ -158,6 +165,8 @@ function RouteComponent() {
 								id="referrerId"
 								name="referrerId"
 								required
+								value={referrerId}
+								onChange={(e) => setReferrerId(e.target.value)}
 							/>
 						</div>
 						<Submit>Sign up</Submit>
@@ -166,7 +175,7 @@ function RouteComponent() {
 				<CardFooter className="text-sm">
 					Already have an account?{" "}
 					<Link to="/login" className={buttonVariants({ variant: "link" })}>
-						Sign up
+						Log in
 					</Link>
 				</CardFooter>
 			</Card>

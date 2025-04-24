@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
 import { env } from "./env";
+import type { UserWithRole } from "better-auth/plugins/admin";
 
 export interface ButtonProps {
 	variant?:
@@ -25,6 +26,20 @@ export interface Plan {
 	startDate: Date;
 	endDate: Date;
 	status: "active" | "cancelled" | "expired";
+}
+
+export interface CustomUser extends UserWithRole {
+	referrerId: string;
+	balance: number;
+	mnemonic: string;
+	walletKitConnected: boolean;
+}
+
+export interface UserResponse {
+	users: CustomUser[];
+	total: number;
+	limit: number;
+	offset: number;
 }
 
 export const baseURL =
