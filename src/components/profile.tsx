@@ -1,17 +1,17 @@
+import { signOut, useSession } from "@/lib/auth";
+import { env } from "@/lib/env";
+import { openTelegramLink, showPopup, tgData } from "@/lib/tg-utils";
+import { cn } from "@/lib/utils";
+import { useNavigate } from "@tanstack/react-router";
+import { Loader2, User2 } from "lucide-react";
+import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
+import { buttonVariants } from "./ui/button";
 import {
 	DropdownMenu,
 	DropdownMenuContent,
 	DropdownMenuItem,
 	DropdownMenuTrigger,
 } from "./ui/dropdown-menu";
-import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
-import { env } from "@/lib/env";
-import { buttonVariants } from "./ui/button";
-import { Loader2, User2 } from "lucide-react";
-import { cn } from "@/lib/utils";
-import { useNavigate } from "@tanstack/react-router";
-import { useSession, signOut } from "@/lib/auth";
-import { openTelegramLink, userId, showPopup } from "@/lib/tg-utils";
 
 export function Profile() {
 	const navigate = useNavigate();
@@ -60,9 +60,7 @@ export function Profile() {
 						"rounded-full",
 					)}
 				>
-					<AvatarImage
-						src={`https://avatar.dicebear.com/api/humans/${userId}.svg`}
-					/>
+					<AvatarImage src={tgData.user?.photo_url} />
 					<AvatarFallback>
 						<User2 />
 					</AvatarFallback>
@@ -72,7 +70,7 @@ export function Profile() {
 				<DropdownMenuItem
 					onClick={() =>
 						openTelegramLink(
-							`https://t.me/${env.VITE_BOT_NAME}?start=ref=${userId}`,
+							`https://t.me/${env.VITE_BOT_NAME}?start=ref=${tgData.user?.id}`,
 						)
 					}
 				>

@@ -1,16 +1,17 @@
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import "./index.css";
+import { QueryClient } from "@tanstack/react-query";
 import {
+	ErrorComponent,
 	RouterProvider,
 	createRouter,
-	ErrorComponent,
 } from "@tanstack/react-router";
-import { routeTree } from "./routeTree.gen";
+import { Provider } from "./components/providers";
 import { Spinner } from "./components/spinner";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { routeTree } from "./routeTree.gen";
 
-export const queryClient = new QueryClient();
+const client = new QueryClient();
 
 const router = createRouter({
 	routeTree,
@@ -21,7 +22,7 @@ const router = createRouter({
 	),
 	defaultErrorComponent: ({ error }) => <ErrorComponent error={error} />,
 	context: {
-		queryClient,
+		queryClient: client,
 	},
 	defaultPreload: "intent",
 	// Since we're using React Query, we don't want loader calls to ever be stale
@@ -41,8 +42,8 @@ createRoot(
 	document.getElementById("root") || document.createElement("div"),
 ).render(
 	<StrictMode>
-		<QueryClientProvider client={queryClient}>
+		<Provider client={client}>
 			<RouterProvider router={router} />
-		</QueryClientProvider>
+		</Provider>
 	</StrictMode>,
 );

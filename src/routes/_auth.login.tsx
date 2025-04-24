@@ -1,23 +1,24 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { Logo } from "@/components/logo";
+import { Submit } from "@/components/submit";
+import { Button, buttonVariants } from "@/components/ui/button";
 import {
 	Card,
 	CardContent,
 	CardDescription,
+	CardFooter,
 	CardHeader,
 	CardTitle,
-	CardFooter,
 } from "@/components/ui/card";
-import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
-import { Logo } from "@/components/logo";
-import { Submit } from "@/components/submit";
+import { Label } from "@/components/ui/label";
 import { signIn } from "@/lib/auth";
-import { showPopup } from "@/lib/tg-utils";
-import type { ChangeEvent } from "react";
-import { useNavigate, Link } from "@tanstack/react-router";
-import { buttonVariants, Button } from "@/components/ui/button";
-import { useState } from "react";
+import { tgData } from "@/lib/tg-utils";
+import { createFileRoute } from "@tanstack/react-router";
+import { Link, useNavigate } from "@tanstack/react-router";
 import { Eye, EyeOff } from "lucide-react";
+import type { ChangeEvent } from "react";
+import { useState } from "react";
+import { toast } from "sonner";
 
 export const Route = createFileRoute("/_auth/login")({
 	component: RouteComponent,
@@ -36,21 +37,17 @@ function RouteComponent() {
 				{ username, password },
 				{
 					onError: (ctx) => {
-						showPopup({
-							title: "Something went wrong",
-							message: ctx.error.message,
-							buttons: [{ type: "close" }],
+						toast.error("Something went wrong", {
+							description: ctx.error.message,
 						});
 					},
 					onSuccess: () => navigate({ to: "/" }),
 				},
 			);
 		} catch (error) {
-			showPopup({
-				title: "Something went wrong",
-				message:
+			toast.error("Something went wrong", {
+				description:
 					error instanceof Error ? error.message : "Internal server error",
-				buttons: [{ type: "close" }],
 			});
 		}
 	};
@@ -67,6 +64,7 @@ function RouteComponent() {
 						<div className="grid gap-2">
 							<Label>Username</Label>
 							<Input
+								value={tgData.user?.username}
 								placeholder="Enter your username"
 								id="username"
 								name="username"

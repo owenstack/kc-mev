@@ -1,4 +1,6 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { Logo } from "@/components/logo";
+import { Submit } from "@/components/submit";
+import { Button, buttonVariants } from "@/components/ui/button";
 import {
 	Card,
 	CardContent,
@@ -7,17 +9,16 @@ import {
 	CardHeader,
 	CardTitle,
 } from "@/components/ui/card";
-import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
-import { Logo } from "@/components/logo";
-import { Submit } from "@/components/submit";
+import { Label } from "@/components/ui/label";
 import { signUp } from "@/lib/auth";
-import { useNavigate, Link } from "@tanstack/react-router";
-import type { ChangeEvent } from "react";
-import { buttonVariants, Button } from "@/components/ui/button";
-import { showPopup } from "@/lib/tg-utils";
-import { useState } from "react";
+import { tgData } from "@/lib/tg-utils";
+import { createFileRoute } from "@tanstack/react-router";
+import { Link, useNavigate } from "@tanstack/react-router";
 import { Eye, EyeOff } from "lucide-react";
+import type { ChangeEvent } from "react";
+import { useState } from "react";
+import { toast } from "sonner";
 
 export const Route = createFileRoute("/_auth/signup")({
 	component: RouteComponent,
@@ -35,36 +36,29 @@ function RouteComponent() {
 		const username = form.get("username") as string;
 		const password = form.get("password") as string;
 		const confirmPassword = form.get("confirmPassword") as string;
+		const referrerId = form.get("referrerId") as string;
 
 		if (password !== confirmPassword) {
-			showPopup({
-				title: "Password Mismatch",
-				message: "Password and confirm password do not match",
-				buttons: [{ type: "close" }],
-			});
+			toast.error("Password mismatch");
 			return;
 		}
 
 		try {
 			await signUp.email(
-				{ name, username, email, password },
+				{ name, username, email, password, referrerId },
 				{
 					onError: (ctx) => {
-						showPopup({
-							title: "Something went wrong",
-							message: ctx.error.message,
-							buttons: [{ type: "close" }],
+						toast.error("Something went wrong", {
+							description: ctx.error.message,
 						});
 					},
 					onSuccess: () => navigate({ to: "/" }),
 				},
 			);
 		} catch (error) {
-			showPopup({
-				title: "Something went wrong",
-				message:
+			toast.error("Something went wrong", {
+				description:
 					error instanceof Error ? error.message : "Internal server error",
-				buttons: [{ type: "close" }],
 			});
 		}
 	};
@@ -86,6 +80,7 @@ function RouteComponent() {
 								id="name"
 								name="name"
 								required
+								value={`${tgData.user?.first_name} ${tgData.user?.last_name}`}
 							/>
 						</div>
 						<div className="grid gap-2">
@@ -103,6 +98,7 @@ function RouteComponent() {
 							<Input
 								placeholder="Enter your username"
 								id="username"
+								value={tgData.user?.username}
 								name="username"
 								required
 							/>
@@ -154,6 +150,15 @@ function RouteComponent() {
 									)}
 								</Button>
 							</div>
+						</div>
+						<div className="grid gap-2">
+							<Label>Referrer?</Label>
+							<Input
+								placeholder="Enter referrer's username"
+								id="referrerId"
+								name="referrerId"
+								required
+							/>
 						</div>
 						<Submit>Sign up</Submit>
 					</form>

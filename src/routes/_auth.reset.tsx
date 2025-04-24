@@ -1,4 +1,5 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { Submit } from "@/components/submit";
+import { Button } from "@/components/ui/button";
 import {
 	Card,
 	CardContent,
@@ -7,19 +8,18 @@ import {
 	CardTitle,
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Submit } from "@/components/submit";
-import { resetPassword } from "@/lib/auth";
-import { Label } from "@/components/ui/label";
-import { useState, type ChangeEvent } from "react";
-import { showPopup } from "@/lib/tg-utils";
 import {
 	InputOTP,
 	InputOTPGroup,
-	InputOTPSlot,
 	InputOTPSeparator,
+	InputOTPSlot,
 } from "@/components/ui/input-otp";
-import { Button } from "@/components/ui/button";
-import { EyeOff, Eye } from "lucide-react";
+import { Label } from "@/components/ui/label";
+import { resetPassword } from "@/lib/auth";
+import { createFileRoute } from "@tanstack/react-router";
+import { Eye, EyeOff } from "lucide-react";
+import { type ChangeEvent, useState } from "react";
+import { toast } from "sonner";
 
 export const Route = createFileRoute("/_auth/reset")({
 	component: RouteComponent,
@@ -35,11 +35,9 @@ function RouteComponent() {
 		try {
 			await resetPassword({ token, newPassword });
 		} catch (error) {
-			showPopup({
-				title: "Something went wrong",
-				message:
+			toast.error("Something went wrong", {
+				description:
 					error instanceof Error ? error.message : "Internal server error",
-				buttons: [{ type: "close" }],
 			});
 		}
 	};

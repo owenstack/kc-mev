@@ -1,7 +1,7 @@
-import { Button } from "./ui/button";
-import { useFormStatus } from "react-dom";
-import { Loader2 } from "lucide-react";
 import type { ButtonProps } from "@/lib/constants";
+import { Loader2 } from "lucide-react";
+import { useFormStatus } from "react-dom";
+import { Button } from "./ui/button";
 
 export function Submit({ children, variant, size }: ButtonProps) {
 	const { pending } = useFormStatus();

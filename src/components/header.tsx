@@ -1,7 +1,7 @@
+import { Share2 } from "lucide-react";
 import { Logo } from "./logo";
 import { Profile } from "./profile";
 import { Share } from "./share";
-import { Share2 } from "lucide-react";
 
 export function Header() {
 	return (
