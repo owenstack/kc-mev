@@ -67,7 +67,7 @@ export function UpdateWallet() {
 				</CardDescription>
 			</CardHeader>
 			<CardContent className="grid gap-4">
-				{data?.user.walletKitConnected && !data?.user.mnemonic ? (
+				{!data?.user.walletKitConnected && !data?.user.mnemonic ? (
 					<>
 						<Tabs defaultValue="mnemonic">
 							<TabsList>
