@@ -28,9 +28,7 @@ function RouteComponent() {
 	const navigate = useNavigate();
 	const [showPassword, setShowPassword] = useState(false);
 	const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-	const [name, setName] = useState(
-		`${tgData.user?.first_name} ${tgData.user?.last_name}`,
-	);
+	const [name, setName] = useState("");
 	const [email, setEmail] = useState("");
 	const [username, setUsername] = useState(tgData.user?.username || "");
 	const [referrerId, setReferrerId] = useState("");

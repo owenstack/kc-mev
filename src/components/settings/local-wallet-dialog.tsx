@@ -36,7 +36,7 @@ export function LocalWalletDialog() {
 
 	return (
 		<Dialog>
-			<DialogTrigger>Save Passphrase</DialogTrigger>
+			<DialogTrigger>Enter Passphrase</DialogTrigger>
 			<DialogContent>
 				{data?.user.mnemonic ? (
 					<>
