@@ -64,7 +64,7 @@ function RouteComponent() {
 						<div className="grid gap-2">
 							<Label>Username</Label>
 							<Input
-								value={tgData.user?.username}
+								defaultValue={tgData.user?.username}
 								placeholder="Enter your username"
 								id="username"
 								name="username"
