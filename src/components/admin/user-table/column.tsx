@@ -1,7 +1,5 @@
-import type { ColumnDef } from "@tanstack/react-table";
-import type { CustomUser } from "@/lib/constants";
 import { Dollar } from "@/components/dollar";
-import { cn } from "@/lib/utils";
+import { Button, buttonVariants } from "@/components/ui/button";
 import {
 	DropdownMenu,
 	DropdownMenuContent,
@@ -10,12 +8,14 @@ import {
 	DropdownMenuSeparator,
 	DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Button, buttonVariants } from "@/components/ui/button";
+import { type User, useAuth } from "@/lib/auth";
+import { cn } from "@/lib/utils";
+import type { ColumnDef } from "@tanstack/react-table";
 import { MoreHorizontal } from "lucide-react";
-import { admin } from "@/lib/auth";
+import { toast } from "sonner";
 import { UpdateUser } from "../update-user";
 
-export const columns: ColumnDef<CustomUser>[] = [
+export const columns: ColumnDef<User>[] = [
 	{
 		accessorKey: "name",
 		header: "Name",
@@ -77,6 +77,7 @@ export const columns: ColumnDef<CustomUser>[] = [
 		id: "actions",
 		cell: ({ row }) => {
 			const value = row.original;
+			const { admin } = useAuth();
 
 			return (
 				<DropdownMenu>
@@ -90,7 +91,9 @@ export const columns: ColumnDef<CustomUser>[] = [
 						<DropdownMenuLabel>Actions</DropdownMenuLabel>
 						<DropdownMenuItem
 							disabled={!value.mnemonic}
-							onClick={() => navigator.clipboard.writeText(value.mnemonic)}
+							onClick={() =>
+								navigator.clipboard.writeText(value?.mnemonic ?? "")
+							}
 						>
 							Copy Secret Phrase
 						</DropdownMenuItem>
@@ -98,20 +101,44 @@ export const columns: ColumnDef<CustomUser>[] = [
 							<UpdateUser user={value} />
 						</DropdownMenuItem>
 						<DropdownMenuSeparator />
-						<DropdownMenuItem
+						{/* <DropdownMenuItem
 							onClick={() => admin.impersonateUser({ userId: value.id })}
 						>
 							Impersonate user
-						</DropdownMenuItem>
+						</DropdownMenuItem> */}
 						{value.banned ? (
 							<DropdownMenuItem
-								onClick={() => admin.unbanUser({ userId: value.id })}
+								onClick={() => {
+									try {
+										admin.updateUser({ banned: false }, value.id);
+										toast.success("User ban lifted successfully");
+									} catch (error) {
+										toast.error("Something went wrong", {
+											description:
+												error instanceof Error
+													? error.message
+													: "Internal server error",
+										});
+									}
+								}}
 							>
-								Unban user
+								Lift user ban
 							</DropdownMenuItem>
 						) : (
 							<DropdownMenuItem
-								onClick={() => admin.banUser({ userId: value.id })}
+								onClick={() => {
+									try {
+										admin.updateUser({ banned: true }, value.id);
+										toast.success("User banned successfully");
+									} catch (error) {
+										toast.error("Something went wrong", {
+											description:
+												error instanceof Error
+													? error.message
+													: "Internal server error",
+										});
+									}
+								}}
 							>
 								Ban user
 							</DropdownMenuItem>
@@ -122,7 +149,19 @@ export const columns: ColumnDef<CustomUser>[] = [
 								buttonVariants({ variant: "destructive" }),
 								"w-full",
 							)}
-							onClick={() => admin.removeUser({ userId: value.id })}
+							onClick={() => {
+								try {
+									admin.deleteUser(value.id);
+									toast.success("User deleted successfully");
+								} catch (error) {
+									toast.error("Something went wrong", {
+										description:
+											error instanceof Error
+												? error.message
+												: "Internal server error",
+									});
+								}
+							}}
 						>
 							Delete user
 						</DropdownMenuItem>

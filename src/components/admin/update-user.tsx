@@ -1,3 +1,10 @@
+import { type User, useAuth } from "@/lib/auth";
+import { cn } from "@/lib/utils";
+import { useState } from "react";
+import { toast } from "sonner";
+import { Submit } from "../submit";
+import { Badge } from "../ui/badge";
+import { buttonVariants } from "../ui/button";
 import {
 	Dialog,
 	DialogContent,
@@ -5,67 +12,19 @@ import {
 	DialogTitle,
 	DialogTrigger,
 } from "../ui/dialog";
-import { admin } from "@/lib/auth";
-import { Label } from "../ui/label";
 import { Input } from "../ui/input";
-import { Submit } from "../submit";
-import { useState } from "react";
-import { toast } from "sonner";
-import { buttonVariants } from "../ui/button";
-import type { UserWithRole } from "better-auth/plugins/admin";
-import { cn } from "@/lib/utils";
-import { useSession } from "@/lib/auth";
-import { Badge } from "../ui/badge";
+import { Label } from "../ui/label";
 
-export function UpdateUser({ user }: { user: UserWithRole }) {
-	const { refetch } = useSession();
+export function UpdateUser({ user }: { user: User }) {
+	const { checkAuth, admin } = useAuth();
 	const [open, setOpen] = useState(false);
-	const [password, setPassword] = useState("");
-	const [role, setRole] = useState<"admin" | "user" | string>(
-		user.role as string,
-	);
+	const [role, setRole] = useState<"admin" | "user">(user.role);
 
 	const updateRole = async (e: React.ChangeEvent<HTMLFormElement>) => {
 		e.preventDefault();
 		try {
-			await admin.setRole(
-				{ userId: user.id, role },
-				{
-					onError: (ctx) => {
-						toast.error("Something went wrong", {
-							description: ctx.error.message,
-						});
-					},
-					onSuccess: () => {
-						refetch();
-						toast.success("Role updated successfully");
-					},
-				},
-			);
-		} catch (error) {
-			toast.error("Something went wrong", {
-				description:
-					error instanceof Error ? error.message : "Internal server error",
-			});
-		}
-	};
-
-	const updatePassword = async (e: React.ChangeEvent<HTMLFormElement>) => {
-		e.preventDefault();
-		try {
-			await admin.setUserPassword(
-				{ userId: user.id, newPassword: password },
-				{
-					onError: (ctx) => {
-						toast.error("Something went wrong", {
-							description: ctx.error.message,
-						});
-					},
-					onSuccess: () => {
-						toast.success("Password updated successfully");
-					},
-				},
-			);
+			await admin.updateUser({ role }, user.id);
+			checkAuth();
 		} catch (error) {
 			toast.error("Something went wrong", {
 				description:
@@ -88,31 +47,13 @@ export function UpdateUser({ user }: { user: UserWithRole }) {
 				<div className="grid gap-4">
 					<div className="grid gap-2">
 						<Label htmlFor="name">Name</Label>
-						<Input id="name" name="name" value={user.name} readOnly />
-					</div>
-					<div className="grid gap-2">
-						<Label htmlFor="email">Email address</Label>
 						<Input
-							id="email"
-							name="email"
-							type="email"
-							value={user.email}
+							id="name"
+							name="name"
+							value={`${user.firstName} ${user.lastName || ""}`}
 							readOnly
 						/>
 					</div>
-					<form onSubmit={updatePassword} className="grid gap-2">
-						<Label htmlFor="password">Password</Label>
-						<div className="grid grid-cols-6 gap-4">
-							<Input
-								id="password"
-								name="password"
-								value={password}
-								className="col-span-5"
-								onChange={(e) => setPassword(e.target.value)}
-							/>
-							<Submit>Save</Submit>
-						</div>
-					</form>
 					<form onSubmit={updateRole} className="grid gap-2">
 						<Label>User role</Label>
 						<div className="flex items-center justify-between">

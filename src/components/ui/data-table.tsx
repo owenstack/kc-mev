@@ -4,8 +4,8 @@ import {
 	type ColumnDef,
 	flexRender,
 	getCoreRowModel,
-	useReactTable,
 	getPaginationRowModel,
+	useReactTable,
 } from "@tanstack/react-table";
 
 import {

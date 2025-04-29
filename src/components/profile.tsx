@@ -1,4 +1,4 @@
-import { signOut, useSession } from "@/lib/auth";
+import { useAuth } from "@/lib/auth";
 import { env } from "@/lib/env";
 import { openTelegramLink, showPopup, tgData } from "@/lib/tg-utils";
 import { cn } from "@/lib/utils";
@@ -15,10 +15,10 @@ import {
 
 export function Profile() {
 	const navigate = useNavigate();
-	const { data: session, isPending } = useSession();
+	const { session, loading, signOut } = useAuth();
 
-	// Check if session is loading
-	if (isPending) {
+	// Check if user is loading
+	if (loading) {
 		return (
 			<Avatar
 				className={cn(
@@ -34,7 +34,7 @@ export function Profile() {
 	}
 
 	// If not authenticated and not loading, render login button
-	if (!session?.session) {
+	if (!session) {
 		return (
 			<Avatar
 				className={cn(

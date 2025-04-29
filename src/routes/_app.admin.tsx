@@ -1,7 +1,6 @@
+import { UserTable } from "@/components/admin/user-table";
 import { baseURL } from "@/lib/constants";
 import { createFileRoute, redirect } from "@tanstack/react-router";
-import { UserTable } from "@/components/admin/user-table";
-import { CreateUser } from "@/components/admin/create-user";
 
 export const Route = createFileRoute("/_app/admin")({
 	component: RouteComponent,
@@ -35,7 +34,6 @@ export const Route = createFileRoute("/_app/admin")({
 function RouteComponent() {
 	return (
 		<main className="flex flex-col items-center gap-4">
-			<CreateUser />
 			<UserTable />
 		</main>
 	);
