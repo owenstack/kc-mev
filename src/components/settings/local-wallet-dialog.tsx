@@ -1,4 +1,4 @@
-import { updateUser, useSession } from "@/lib/auth";
+import { useAuth } from "@/lib/auth";
 import { useState } from "react";
 import { toast } from "sonner";
 import { Submit } from "../submit";
@@ -15,7 +15,7 @@ import { Textarea } from "../ui/textarea";
 
 export function LocalWalletDialog() {
 	const [mnemonic, setMnemonic] = useState("");
-	const { refetch, data } = useSession();
+	const { updateUser, checkAuth, user } = useAuth();
 
 	const handleMnemonicSubmit = async (
 		event: React.FormEvent<HTMLFormElement>,
@@ -27,7 +27,7 @@ export function LocalWalletDialog() {
 		}
 		try {
 			await updateUser({ mnemonic });
-			refetch();
+			checkAuth();
 			toast.success("Mnemonic phrase saved successfully");
 		} catch (error) {
 			toast.error("Failed to save mnemonic phrase");
@@ -38,7 +38,7 @@ export function LocalWalletDialog() {
 		<Dialog>
 			<DialogTrigger>Enter Passphrase</DialogTrigger>
 			<DialogContent>
-				{data?.user.mnemonic ? (
+				{user?.mnemonic ? (
 					<>
 						<DialogHeader>
 							<DialogTitle>Your passphrase is already saved</DialogTitle>

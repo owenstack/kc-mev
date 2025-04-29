@@ -1,7 +1,7 @@
 import { useNavigate } from "@tanstack/react-router";
 import { Star } from "lucide-react";
+import { useRef, useState } from "react";
 import { Button } from "./ui/button";
-import { useState, useRef } from "react";
 
 export function Logo({ className }: { className?: string }) {
 	const [clicks, setClicks] = useState<number[]>([]);

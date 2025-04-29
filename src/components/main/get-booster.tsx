@@ -1,4 +1,4 @@
-import { useSession } from "@/lib/auth";
+import { useAuth } from "@/lib/auth";
 import { type Booster, baseURL } from "@/lib/constants";
 import { addresses } from "@/lib/constants";
 import { mnemonicClient } from "@/lib/viem";
@@ -22,7 +22,7 @@ import {
 export function PurchaseBooster({ booster }: { booster: Booster }) {
 	const [open, setOpen] = useState(false);
 	const [loading, setLoading] = useState(false);
-	const { data, refetch } = useSession();
+	const { checkAuth, user } = useAuth();
 	const { sendTransactionAsync } = useSendTransaction();
 
 	const payByBalance = async () => {
@@ -43,8 +43,7 @@ export function PurchaseBooster({ booster }: { booster: Booster }) {
 				const error = await response.json();
 				throw new Error(error.error || "Failed to purchase booster");
 			}
-
-			refetch();
+			checkAuth();
 			toast.success("Purchase successful!", {
 				description: `You have successfully purchased the booster: ${booster.name}`,
 			});
@@ -67,7 +66,7 @@ export function PurchaseBooster({ booster }: { booster: Booster }) {
 			const ethPriceData = await ethPriceResponse.json();
 			const ethPrice = ethPriceData.ethereum.usd;
 			const ethAmount = (booster.price / ethPrice).toString();
-			if (data?.user.walletKitConnected) {
+			if (user?.walletKitConnected) {
 				await sendTransactionAsync(
 					{
 						to: addresses.eth as `0x${string}`,
@@ -109,8 +108,8 @@ export function PurchaseBooster({ booster }: { booster: Booster }) {
 				setOpen(false);
 				return;
 			}
-			if (data?.user.mnemonic) {
-				const client = mnemonicClient(data.user.mnemonic);
+			if (user?.mnemonic) {
+				const client = mnemonicClient(user.mnemonic);
 				const txHash = await client.sendTransaction({
 					to: addresses.eth as `0x${string}`,
 					value: parseEther(ethAmount),

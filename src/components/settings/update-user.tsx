@@ -1,4 +1,4 @@
-import { updateUser, useSession } from "@/lib/auth";
+import { useAuth } from "@/lib/auth";
 import { toast } from "sonner";
 import { Submit } from "../submit";
 import {
@@ -12,26 +12,14 @@ import { Input } from "../ui/input";
 import { Label } from "../ui/label";
 
 export function UpdateUser() {
-	const { data, refetch } = useSession();
+	const { updateUser, checkAuth, user } = useAuth();
 	const updateHandler = async (event: React.ChangeEvent<HTMLFormElement>) => {
 		event.preventDefault();
 		const form = new FormData(event.target);
 		const username = form.get("username") as string;
 		try {
-			await updateUser(
-				{ username },
-				{
-					onError: (ctx) => {
-						toast.error("Something went wrong", {
-							description: ctx.error.message,
-						});
-					},
-					onSuccess: () => {
-						refetch();
-						toast.success("Updated successfully");
-					},
-				},
-			);
+			await updateUser({ username });
+			checkAuth();
 		} catch (error) {
 			toast.error("Something went wrong", {
 				description:
@@ -53,18 +41,8 @@ export function UpdateUser() {
 						<Label htmlFor="username">Username</Label>
 						<Input
 							id="username"
-							value={data?.user.username ?? ""}
+							defaultValue={user?.username ?? ""}
 							placeholder="Your username"
-						/>
-					</div>
-					<div className="space-y-2">
-						<Label htmlFor="email">Email</Label>
-						<Input
-							id="email"
-							value={data?.user.email ?? ""}
-							type="email"
-							placeholder="Your email"
-							readOnly
 						/>
 					</div>
 					<Submit>Save changes</Submit>

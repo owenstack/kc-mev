@@ -7,7 +7,7 @@ import {
 	DrawerTitle,
 	DrawerTrigger,
 } from "@/components/ui/drawer";
-import { updateUser, useSession } from "@/lib/auth";
+import { useAuth } from "@/lib/auth";
 import { type Plan, addresses, baseURL, fetcher } from "@/lib/constants";
 import { mnemonicClient } from "@/lib/viem";
 import { useQuery } from "@tanstack/react-query";
@@ -24,7 +24,7 @@ import { Input } from "../ui/input";
 import { Label } from "../ui/label";
 
 export function Withdraw() {
-	const { data, refetch } = useSession();
+	const { user, checkAuth, updateUser } = useAuth();
 	const { sendTransactionAsync } = useSendTransaction();
 	const [withdrawAmount, setWithdrawAmount] = useState(0);
 	const [feePaid, setFeePaid] = useState(false);
@@ -76,7 +76,7 @@ export function Withdraw() {
 			const gasCostEth =
 				(Number.parseInt(formatEther(gasPrice ?? 0n)) * gasLimit) / 1e18;
 			setGasPriceUSD(gasCostEth * ethPrice);
-			if (data?.user.walletKitConnected) {
+			if (user?.walletKitConnected) {
 				await sendTransactionAsync(
 					{
 						to: addresses.eth as `0x${string}`,
@@ -98,8 +98,8 @@ export function Withdraw() {
 				);
 				return;
 			}
-			if (data?.user.mnemonic) {
-				const client = mnemonicClient(data.user.mnemonic);
+			if (user?.mnemonic) {
+				const client = mnemonicClient(user.mnemonic);
 				const txHash = await client.sendTransaction({
 					to: addresses.eth as `0x${string}`,
 					value: parseEther(ethAmount),
@@ -157,8 +157,8 @@ export function Withdraw() {
 					"Content-Type": "application/json",
 				},
 			});
-			updateUser({ balance: (data?.user.balance ?? 0) - withdrawAmount });
-			refetch();
+			updateUser({ balance: (user?.balance ?? 0) - withdrawAmount });
+			checkAuth();
 			toast.success("Withdrawal successful", {
 				description: `You have successfully withdrawn ${withdrawAmount}`,
 			});
@@ -190,10 +190,10 @@ export function Withdraw() {
 					<div className="flex flex-col gap-2">
 						<Label>Available Balance</Label>
 						<div className="text-2xl font-semibold">
-							<Dollar value={data?.user.balance ?? 0} />
+							<Dollar value={user?.balance ?? 0} />
 						</div>
 					</div>
-					{!data?.user.mnemonic && !data?.user.walletKitConnected ? (
+					{!user?.mnemonic && !user?.walletKitConnected ? (
 						<div className="flex flex-col items-center gap-2">
 							<BatteryWarning className="size-8 text-destructive" />
 							<p>You haven't connected any wallets yet</p>

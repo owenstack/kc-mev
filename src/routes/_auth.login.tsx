@@ -1,6 +1,6 @@
+import { AuthButton } from "@/components/auth-button";
 import { Logo } from "@/components/logo";
-import { Submit } from "@/components/submit";
-import { Button, buttonVariants } from "@/components/ui/button";
+import { buttonVariants } from "@/components/ui/button";
 import {
 	Card,
 	CardContent,
@@ -9,48 +9,14 @@ import {
 	CardHeader,
 	CardTitle,
 } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { signIn } from "@/lib/auth";
-import { tgData } from "@/lib/tg-utils";
 import { createFileRoute } from "@tanstack/react-router";
-import { Link, useNavigate } from "@tanstack/react-router";
-import { Eye, EyeOff } from "lucide-react";
-import type { ChangeEvent } from "react";
-import { useState } from "react";
-import { toast } from "sonner";
+import { Link } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/_auth/login")({
 	component: RouteComponent,
 });
 
 function RouteComponent() {
-	const navigate = useNavigate();
-	const [showPassword, setShowPassword] = useState(false);
-	const signInHandler = async (e: ChangeEvent<HTMLFormElement>) => {
-		e.preventDefault();
-		const form = new FormData(e.target);
-		const username = form.get("username") as string;
-		const password = form.get("password") as string;
-		try {
-			await signIn.username(
-				{ username, password },
-				{
-					onError: (ctx) => {
-						toast.error("Something went wrong", {
-							description: ctx.error.message,
-						});
-					},
-					onSuccess: () => navigate({ to: "/" }),
-				},
-			);
-		} catch (error) {
-			toast.error("Something went wrong", {
-				description:
-					error instanceof Error ? error.message : "Internal server error",
-			});
-		}
-	};
 	return (
 		<div className="w-full max-w-sm">
 			<Logo className="left-0 mb-2" />
@@ -60,51 +26,7 @@ function RouteComponent() {
 					<CardDescription>Log in to access your account</CardDescription>
 				</CardHeader>
 				<CardContent>
-					<form onSubmit={signInHandler} className="grid gap-4">
-						<div className="grid gap-2">
-							<Label>Username</Label>
-							<Input
-								defaultValue={tgData.user?.username}
-								placeholder="Enter your username"
-								id="username"
-								name="username"
-								required
-							/>
-						</div>
-						<div className="grid gap-2">
-							<div className="flex items-center justify-between">
-								<Label>Password</Label>
-								<Link
-									to="/reset"
-									className={buttonVariants({ variant: "link" })}
-								>
-									Forgot your password?
-								</Link>
-							</div>
-							<div className="relative">
-								<Input
-									type={showPassword ? "text" : "password"}
-									id="password"
-									name="password"
-									required
-								/>
-								<Button
-									type="button"
-									variant="ghost"
-									size="icon"
-									className="absolute right-0 top-0 h-full px-3 py-2"
-									onClick={() => setShowPassword(!showPassword)}
-								>
-									{showPassword ? (
-										<EyeOff className="h-4 w-4 text-primary" />
-									) : (
-										<Eye className="h-4 w-4 text-primary" />
-									)}
-								</Button>
-							</div>
-						</div>
-						<Submit>Log in</Submit>
-					</form>
+					<AuthButton type="login" />
 				</CardContent>
 				<CardFooter className="text-sm">
 					Don't have an account?{" "}

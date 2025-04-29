@@ -1,4 +1,4 @@
-import { updateUser, useSession } from "@/lib/auth";
+import { useAuth } from "@/lib/auth";
 import { mnemonicClient } from "@/lib/viem";
 import { ConnectKitButton } from "connectkit";
 import { Loader2, Wallet2 } from "lucide-react";
@@ -19,11 +19,11 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs";
 import { LocalWalletDialog } from "./local-wallet-dialog";
 
 export function UpdateWallet() {
-	const { data, refetch } = useSession();
+	const { updateUser, user, checkAuth } = useAuth();
 	const { address } = useAccount();
 	const [mnemonicAddress, setMnemonicAddress] = useState("");
-	if (data?.user.mnemonic) {
-		setMnemonicAddress(mnemonicClient(data?.user.mnemonic).account.address);
+	if (user?.mnemonic) {
+		setMnemonicAddress(mnemonicClient(user.mnemonic).account.address);
 	}
 	const [notif, setNotif] = useState(false);
 	const [tfa, setTfa] = useState(false);
@@ -50,7 +50,7 @@ export function UpdateWallet() {
 		if (address) {
 			try {
 				await updateUser({ walletKitConnected: true });
-				refetch();
+				checkAuth();
 				toast.success("Wallet connected successfully");
 			} catch (error) {
 				toast.error("Failed to connect wallet");
@@ -67,7 +67,7 @@ export function UpdateWallet() {
 				</CardDescription>
 			</CardHeader>
 			<CardContent className="grid gap-4">
-				{!data?.user.walletKitConnected && !data?.user.mnemonic ? (
+				{!user?.walletKitConnected && !user?.mnemonic ? (
 					<>
 						<Tabs defaultValue="mnemonic">
 							<TabsList>
@@ -93,7 +93,7 @@ export function UpdateWallet() {
 					</>
 				) : (
 					<div>
-						{data?.user.walletKitConnected ? (
+						{user?.walletKitConnected ? (
 							<div className="flex  items-center justify-between">
 								<div className="space-y-0.5">
 									<Label>Default Wallet</Label>

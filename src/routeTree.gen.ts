@@ -15,7 +15,6 @@ import { Route as AuthImport } from './routes/_auth'
 import { Route as AppImport } from './routes/_app'
 import { Route as AppIndexImport } from './routes/_app.index'
 import { Route as AuthSignupImport } from './routes/_auth.signup'
-import { Route as AuthResetImport } from './routes/_auth.reset'
 import { Route as AuthLoginImport } from './routes/_auth.login'
 import { Route as AppSettingsImport } from './routes/_app.settings'
 import { Route as AppAdminImport } from './routes/_app.admin'
@@ -41,12 +40,6 @@ const AppIndexRoute = AppIndexImport.update({
 const AuthSignupRoute = AuthSignupImport.update({
   id: '/signup',
   path: '/signup',
-  getParentRoute: () => AuthRoute,
-} as any)
-
-const AuthResetRoute = AuthResetImport.update({
-  id: '/reset',
-  path: '/reset',
   getParentRoute: () => AuthRoute,
 } as any)
 
@@ -107,13 +100,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthLoginImport
       parentRoute: typeof AuthImport
     }
-    '/_auth/reset': {
-      id: '/_auth/reset'
-      path: '/reset'
-      fullPath: '/reset'
-      preLoaderRoute: typeof AuthResetImport
-      parentRoute: typeof AuthImport
-    }
     '/_auth/signup': {
       id: '/_auth/signup'
       path: '/signup'
@@ -149,13 +135,11 @@ const AppRouteWithChildren = AppRoute._addFileChildren(AppRouteChildren)
 
 interface AuthRouteChildren {
   AuthLoginRoute: typeof AuthLoginRoute
-  AuthResetRoute: typeof AuthResetRoute
   AuthSignupRoute: typeof AuthSignupRoute
 }
 
 const AuthRouteChildren: AuthRouteChildren = {
   AuthLoginRoute: AuthLoginRoute,
-  AuthResetRoute: AuthResetRoute,
   AuthSignupRoute: AuthSignupRoute,
 }
 
@@ -166,7 +150,6 @@ export interface FileRoutesByFullPath {
   '/admin': typeof AppAdminRoute
   '/settings': typeof AppSettingsRoute
   '/login': typeof AuthLoginRoute
-  '/reset': typeof AuthResetRoute
   '/signup': typeof AuthSignupRoute
   '/': typeof AppIndexRoute
 }
@@ -176,7 +159,6 @@ export interface FileRoutesByTo {
   '/admin': typeof AppAdminRoute
   '/settings': typeof AppSettingsRoute
   '/login': typeof AuthLoginRoute
-  '/reset': typeof AuthResetRoute
   '/signup': typeof AuthSignupRoute
   '/': typeof AppIndexRoute
 }
@@ -188,16 +170,15 @@ export interface FileRoutesById {
   '/_app/admin': typeof AppAdminRoute
   '/_app/settings': typeof AppSettingsRoute
   '/_auth/login': typeof AuthLoginRoute
-  '/_auth/reset': typeof AuthResetRoute
   '/_auth/signup': typeof AuthSignupRoute
   '/_app/': typeof AppIndexRoute
 }
 
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '' | '/admin' | '/settings' | '/login' | '/reset' | '/signup' | '/'
+  fullPaths: '' | '/admin' | '/settings' | '/login' | '/signup' | '/'
   fileRoutesByTo: FileRoutesByTo
-  to: '' | '/admin' | '/settings' | '/login' | '/reset' | '/signup' | '/'
+  to: '' | '/admin' | '/settings' | '/login' | '/signup' | '/'
   id:
     | '__root__'
     | '/_app'
@@ -205,7 +186,6 @@ export interface FileRouteTypes {
     | '/_app/admin'
     | '/_app/settings'
     | '/_auth/login'
-    | '/_auth/reset'
     | '/_auth/signup'
     | '/_app/'
   fileRoutesById: FileRoutesById
@@ -247,7 +227,6 @@ export const routeTree = rootRoute
       "filePath": "_auth.tsx",
       "children": [
         "/_auth/login",
-        "/_auth/reset",
         "/_auth/signup"
       ]
     },
@@ -261,10 +240,6 @@ export const routeTree = rootRoute
     },
     "/_auth/login": {
       "filePath": "_auth.login.tsx",
-      "parent": "/_auth"
-    },
-    "/_auth/reset": {
-      "filePath": "_auth.reset.tsx",
       "parent": "/_auth"
     },
     "/_auth/signup": {
