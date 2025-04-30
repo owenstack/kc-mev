@@ -1,6 +1,6 @@
 import { useAuth } from "@/lib/auth";
 import { env } from "@/lib/env";
-import { openTelegramLink, showPopup } from "@/lib/tg-utils";
+import { openTelegramLink } from "@/lib/tg-utils";
 import { cn } from "@/lib/utils";
 import { useNavigate } from "@tanstack/react-router";
 import { Loader2, User2 } from "lucide-react";
@@ -15,7 +15,7 @@ import {
 
 export function Profile() {
 	const navigate = useNavigate();
-	const { session, loading, signOut, user } = useAuth();
+	const { session, loading, user } = useAuth();
 
 	// Check if user is loading
 	if (loading) {
@@ -41,7 +41,6 @@ export function Profile() {
 					buttonVariants({ variant: "outline", size: "icon" }),
 					"rounded-full cursor-pointer",
 				)}
-				onClick={() => navigate({ to: "/login" })}
 			>
 				<AvatarFallback>
 					<User2 />
@@ -78,24 +77,6 @@ export function Profile() {
 				</DropdownMenuItem>
 				<DropdownMenuItem onClick={() => navigate({ to: "/settings" })}>
 					Settings
-				</DropdownMenuItem>
-				<DropdownMenuItem
-					onClick={async () => {
-						try {
-							await signOut();
-							navigate({ to: "/login" });
-						} catch (error) {
-							showPopup({
-								title: "Something went wrong",
-								message:
-									error instanceof Error
-										? error.message
-										: "Internal server error",
-							});
-						}
-					}}
-				>
-					Logout
 				</DropdownMenuItem>
 			</DropdownMenuContent>
 		</DropdownMenu>
