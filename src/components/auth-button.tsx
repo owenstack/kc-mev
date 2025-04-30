@@ -7,20 +7,27 @@ import { toast } from "sonner";
 export function AuthButton({
 	type,
 	callbackUrl = "/",
-}: { type: "login" | "signup"; callbackUrl?: string }) {
+}: { type: "signin" | "signup"; callbackUrl?: string }) {
 	const navigate = useNavigate();
 	return (
 		<LoginButton
 			botUsername={env.VITE_BOT_NAME}
 			onAuthCallback={async (data) => {
 				try {
-					const response = await fetch(`${baseURL}/api/auth/${type}`, {
-						method: "POST",
-						body: JSON.stringify(data),
-						headers: {
-							"Content-Type": "application/json",
+					const searchParams = new URLSearchParams();
+					for (const [key, value] of Object.entries(data)) {
+						searchParams.append(key, value.toString());
+					}
+					const response = await fetch(
+						`${baseURL}/api/auth/${type}?${searchParams}`,
+						{
+							method: "POST",
+							headers: {
+								"Content-Type": "application/json",
+							},
+							credentials: "include",
 						},
-					});
+					);
 
 					if (!response.ok) {
 						const errorText = await response.text();

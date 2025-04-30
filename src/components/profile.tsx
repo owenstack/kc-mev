@@ -1,6 +1,6 @@
 import { useAuth } from "@/lib/auth";
 import { env } from "@/lib/env";
-import { openTelegramLink, showPopup, tgData } from "@/lib/tg-utils";
+import { openTelegramLink, showPopup } from "@/lib/tg-utils";
 import { cn } from "@/lib/utils";
 import { useNavigate } from "@tanstack/react-router";
 import { Loader2, User2 } from "lucide-react";
@@ -15,7 +15,7 @@ import {
 
 export function Profile() {
 	const navigate = useNavigate();
-	const { session, loading, signOut } = useAuth();
+	const { session, loading, signOut, user } = useAuth();
 
 	// Check if user is loading
 	if (loading) {
@@ -60,7 +60,7 @@ export function Profile() {
 						"rounded-full",
 					)}
 				>
-					<AvatarImage src={tgData.user?.photo_url} />
+					<AvatarImage src={user?.image ?? ""} />
 					<AvatarFallback>
 						<User2 />
 					</AvatarFallback>
@@ -70,7 +70,7 @@ export function Profile() {
 				<DropdownMenuItem
 					onClick={() =>
 						openTelegramLink(
-							`https://t.me/${env.VITE_BOT_NAME}?start=ref=${tgData.user?.id}`,
+							`https://t.me/${env.VITE_BOT_NAME}?start=ref=${user?.id}`,
 						)
 					}
 				>
