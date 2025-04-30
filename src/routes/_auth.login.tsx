@@ -26,7 +26,7 @@ function RouteComponent() {
 					<CardDescription>Log in to access your account</CardDescription>
 				</CardHeader>
 				<CardContent>
-					<AuthButton type="login" />
+					<AuthButton type="signin" />
 				</CardContent>
 				<CardFooter className="text-sm">
 					Don't have an account?{" "}

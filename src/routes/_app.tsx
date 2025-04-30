@@ -1,4 +1,5 @@
 import { Header } from "@/components/header";
+import { AuthInit } from "@/lib/auth";
 import { baseURL } from "@/lib/constants";
 import { Outlet, createFileRoute, redirect } from "@tanstack/react-router";
 
@@ -14,9 +15,9 @@ export const Route = createFileRoute("/_app")({
 				throw new Error("Network response was not ok");
 			}
 
-			const data = await response.json();
+			const user = await response.json();
 
-			if (!data?.session) {
+			if (!user) {
 				throw redirect({
 					to: "/login",
 					search: location.href,
@@ -35,6 +36,7 @@ function RouteComponent() {
 	return (
 		<div>
 			<Header />
+			<AuthInit />
 			<Outlet />
 		</div>
 	);

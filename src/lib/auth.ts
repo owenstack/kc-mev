@@ -1,4 +1,3 @@
-import { useNavigate } from "@tanstack/react-router";
 import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
 import { fetcher } from "./constants";
@@ -51,6 +50,8 @@ export interface AuthStore {
 	};
 }
 
+let authInitialized = false;
+
 export const useAuth = create<AuthStore>()(
 	persist(
 		(set) => ({
@@ -68,6 +69,7 @@ export const useAuth = create<AuthStore>()(
 						loading: false,
 					});
 				} catch (error) {
+					console.error("Auth check error:", error);
 					set({
 						user: null,
 						session: null,
@@ -76,7 +78,6 @@ export const useAuth = create<AuthStore>()(
 				}
 			},
 			signOut: async () => {
-				const navigate = useNavigate();
 				try {
 					await fetch(`${baseURL}/api/auth/signout`, {
 						method: "POST",
@@ -87,7 +88,6 @@ export const useAuth = create<AuthStore>()(
 						session: null,
 						loading: false,
 					});
-					navigate({ to: "/login" });
 				} catch (error) {
 					console.error("Error signing out:", error);
 					throw error;
@@ -174,3 +174,32 @@ export const useAuth = create<AuthStore>()(
 		},
 	),
 );
+
+export function initAuth() {
+	if (authInitialized) return;
+
+	// Get current state
+	const state = useAuth.getState();
+	const { session, checkAuth } = state;
+
+	// Check if we have a valid session
+	if (session) {
+		const sessionExpires = new Date(session.expiresAt);
+		if (sessionExpires > new Date()) {
+			// Valid session, just set loading to false
+			useAuth.setState({ loading: false });
+			authInitialized = true;
+			return;
+		}
+	}
+
+	// No valid session, check auth
+	checkAuth();
+	authInitialized = true;
+}
+
+export function AuthInit() {
+	// Call initAuth on first render
+	initAuth();
+	return null;
+}
