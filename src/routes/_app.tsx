@@ -17,23 +17,25 @@ export const Route = createFileRoute("/_app")({
 					},
 				);
 
-				if (initResponse.ok) {
-					// Session initialized successfully, proceed to check session
-					const sessionResponse = await fetch(
-						`${baseURL}/api/auth/get-session`,
-						{
-							credentials: "include",
-						},
-					);
-
-					if (sessionResponse.ok) {
-						const user = await sessionResponse.json();
-						if (user) return; // User authenticated, proceed to app
-					}
+				if (!initResponse.ok) {
+					throw new Error("Failed to initialize session");
 				}
+				const initData = await initResponse.json();
+				if (!initData.success) {
+					throw new Error(initData.error || "Failed to initialize session");
+				}
+				// After successful init, get session
+				const sessionResponse = await fetch(`${baseURL}/api/auth/get-session`, {
+					credentials: "include",
+				});
+				if (!sessionResponse.ok) {
+					throw new Error("Failed to get session");
+				}
+				const user = await sessionResponse.json();
+				return user;
 			}
 
-			// No session token or init failed, try regular session check
+			// No session token, try regular session check
 			const response = await fetch(`${baseURL}/api/auth/get-session`, {
 				credentials: "include",
 			});
@@ -45,7 +47,11 @@ export const Route = createFileRoute("/_app")({
 			const user = await response.json();
 			return user;
 		} catch (error) {
-			throw new Error("Failed to check authentication");
+			throw new Error(
+				error instanceof Error
+					? error.message
+					: "Failed to check authentication",
+			);
 		}
 	},
 });

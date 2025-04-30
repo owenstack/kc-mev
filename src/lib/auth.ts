@@ -1,7 +1,6 @@
 import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
-import { fetcher } from "./constants";
-import { baseURL } from "./constants";
+import { fetcher, baseURL } from "./constants";
 
 export interface User {
 	id: number;
