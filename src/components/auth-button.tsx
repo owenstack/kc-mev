@@ -6,9 +6,11 @@ import { toast } from "sonner";
 
 export function AuthButton({
 	type,
-	callbackUrl = "/",
-}: { type: "signin" | "signup"; callbackUrl?: string }) {
+}: {
+	type: "signin" | "signup";
+}) {
 	const navigate = useNavigate();
+
 	return (
 		<LoginButton
 			botUsername={env.VITE_BOT_NAME}
@@ -34,9 +36,15 @@ export function AuthButton({
 						throw new Error(errorText);
 					}
 
-					const result = await response.json();
-					if (result.success) {
-						return navigate({ to: callbackUrl });
+					const { success, session } = await response.json();
+					if (success) {
+						navigate({
+							to: "/",
+							search: (prev) => ({
+								...prev,
+								session,
+							}),
+						});
 					}
 				} catch (error) {
 					toast.error("Something went wrong", {

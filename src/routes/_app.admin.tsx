@@ -1,40 +1,24 @@
 import { UserTable } from "@/components/admin/user-table";
-import { baseURL } from "@/lib/constants";
+import { useAuth } from "@/lib/auth";
 import { createFileRoute, redirect } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/_app/admin")({
-	component: RouteComponent,
-	beforeLoad: async ({ location }) => {
-		try {
-			const response = await fetch(`${baseURL}/api/auth/get-session`, {
-				credentials: "include",
-			});
-
-			if (!response.ok) {
-				throw new Error("Network response was not ok");
-			}
-
-			const data = await response.json();
-
-			if (data?.user.role !== "admin") {
-				throw redirect({
-					to: "/",
-					search: location.href,
-				});
-			}
-		} catch (error) {
+	beforeLoad: () => {
+		const auth = useAuth.getState();
+		if (!auth.user || auth.user.role !== "admin") {
 			throw redirect({
 				to: "/",
-				search: location.href,
 			});
 		}
 	},
+	component: AdminPage,
 });
 
-function RouteComponent() {
+function AdminPage() {
 	return (
-		<main className="flex flex-col items-center gap-4">
+		<div className="container mx-auto py-8">
+			<h1 className="text-3xl font-bold mb-8">Admin Panel</h1>
 			<UserTable />
-		</main>
+		</div>
 	);
 }

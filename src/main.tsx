@@ -9,6 +9,7 @@ import {
 } from "@tanstack/react-router";
 import { Provider } from "./components/providers";
 import { Spinner } from "./components/spinner";
+import type { AppSearchParams } from "./lib/types";
 import { routeTree } from "./routeTree.gen";
 
 const client = new QueryClient();
@@ -35,6 +36,7 @@ const router = createRouter({
 declare module "@tanstack/react-router" {
 	interface Register {
 		router: typeof router;
+		search: AppSearchParams;
 	}
 }
 

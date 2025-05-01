@@ -1,82 +1,78 @@
 import { useAuth } from "@/lib/auth";
-import { env } from "@/lib/env";
-import { openTelegramLink } from "@/lib/tg-utils";
-import { cn } from "@/lib/utils";
-import { useNavigate } from "@tanstack/react-router";
-import { Loader2, User2 } from "lucide-react";
+import { baseURL } from "@/lib/constants";
+import { Link } from "@tanstack/react-router";
+import { Settings } from "lucide-react";
+import { toast } from "sonner";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
-import { buttonVariants } from "./ui/button";
+import { Button } from "./ui/button";
 import {
 	DropdownMenu,
 	DropdownMenuContent,
 	DropdownMenuItem,
+	DropdownMenuSeparator,
 	DropdownMenuTrigger,
 } from "./ui/dropdown-menu";
 
 export function Profile() {
-	const navigate = useNavigate();
-	const { session, loading, user } = useAuth();
+	const { user, loading } = useAuth();
 
-	// Check if user is loading
+	const handleSignOut = async () => {
+		try {
+			await fetch(`${baseURL}/api/auth/signout`, {
+				credentials: "include",
+			});
+			window.location.reload();
+		} catch (error) {
+			toast.error("Failed to sign out");
+		}
+	};
+
 	if (loading) {
-		return (
-			<Avatar
-				className={cn(
-					buttonVariants({ variant: "outline", size: "icon" }),
-					"rounded-full",
-				)}
-			>
-				<AvatarFallback>
-					<Loader2 className="h-4 w-4 animate-spin" />
-				</AvatarFallback>
-			</Avatar>
-		);
+		return null;
 	}
 
-	// If not authenticated and not loading, render login button
-	if (!session) {
-		return (
-			<Avatar
-				className={cn(
-					buttonVariants({ variant: "outline", size: "icon" }),
-					"rounded-full cursor-pointer",
-				)}
-			>
-				<AvatarFallback>
-					<User2 />
-				</AvatarFallback>
-			</Avatar>
-		);
+	if (!user) {
+		return <Button variant="outline">Connect wallet</Button>;
 	}
 
-	// User is authenticated, render dropdown menu
 	return (
 		<DropdownMenu>
 			<DropdownMenuTrigger asChild>
-				<Avatar
-					className={cn(
-						buttonVariants({ variant: "outline", size: "icon" }),
-						"rounded-full",
-					)}
-				>
-					<AvatarImage src={user?.image ?? ""} />
-					<AvatarFallback>
-						<User2 />
-					</AvatarFallback>
-				</Avatar>
+				<Button variant="ghost" className="relative size-8 rounded-full">
+					<Avatar className="size-8">
+						<AvatarImage src={user.image} alt={user.firstName} />
+						<AvatarFallback>
+							{user.firstName?.[0]?.toUpperCase()}
+						</AvatarFallback>
+					</Avatar>
+				</Button>
 			</DropdownMenuTrigger>
 			<DropdownMenuContent align="end">
-				<DropdownMenuItem
-					onClick={() =>
-						openTelegramLink(
-							`https://t.me/${env.VITE_BOT_NAME}?start=ref=${user?.id}`,
-						)
-					}
-				>
-					Invite a friend
+				<div className="flex items-center justify-start gap-2 p-2">
+					<div className="flex flex-col space-y-1 leading-none">
+						{user.firstName && <p className="font-medium">{user.firstName}</p>}
+						{user.username && (
+							<p className="w-[200px] truncate text-sm text-muted-foreground">
+								@{user.username}
+							</p>
+						)}
+					</div>
+				</div>
+				<DropdownMenuSeparator />
+				<DropdownMenuItem asChild>
+					<Link
+						to="/settings"
+						className="flex w-full items-center gap-2 text-sm"
+					>
+						<Settings className="size-4" />
+						Settings
+					</Link>
 				</DropdownMenuItem>
-				<DropdownMenuItem onClick={() => navigate({ to: "/settings" })}>
-					Settings
+				<DropdownMenuItem
+					className="text-destructive focus:text-destructive"
+					onClick={handleSignOut}
+				>
+					Sign out
 				</DropdownMenuItem>
 			</DropdownMenuContent>
 		</DropdownMenu>

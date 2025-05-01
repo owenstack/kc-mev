@@ -1,13 +1,31 @@
-import { type User, useAuth } from "@/lib/auth";
-import { cn } from "@/lib/utils";
+import {
+	Select,
+	SelectContent,
+	SelectItem,
+	SelectTrigger,
+	SelectValue,
+} from "@/components/ui/select";
+import type { User } from "@/lib/auth";
+import { baseURL } from "@/lib/constants";
+import { Pencil, Trash } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
-import { Submit } from "../submit";
-import { Badge } from "../ui/badge";
-import { buttonVariants } from "../ui/button";
+import {
+	AlertDialog,
+	AlertDialogAction,
+	AlertDialogCancel,
+	AlertDialogContent,
+	AlertDialogDescription,
+	AlertDialogFooter,
+	AlertDialogHeader,
+	AlertDialogTitle,
+	AlertDialogTrigger,
+} from "../ui/alert-dialog";
+import { Button } from "../ui/button";
 import {
 	Dialog,
 	DialogContent,
+	DialogDescription,
 	DialogHeader,
 	DialogTitle,
 	DialogTrigger,
@@ -15,69 +33,120 @@ import {
 import { Input } from "../ui/input";
 import { Label } from "../ui/label";
 
-export function UpdateUser({ user }: { user: User }) {
-	const { checkAuth, admin } = useAuth();
-	const [open, setOpen] = useState(false);
-	const [role, setRole] = useState<"admin" | "user">(user.role);
+interface UpdateUserProps {
+	user: User;
+	onDelete: () => Promise<void>;
+}
 
-	const updateRole = async (e: React.ChangeEvent<HTMLFormElement>) => {
-		e.preventDefault();
+export function UpdateUser({ user, onDelete }: UpdateUserProps) {
+	const [open, setOpen] = useState(false);
+
+	const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+		event.preventDefault();
+		const formData = new FormData(event.currentTarget);
+		const username = formData.get("username") as string;
+		const role = formData.get("role") as "user" | "admin";
+		const balance = Number(formData.get("balance"));
+
 		try {
-			await admin.updateUser({ role }, user.id);
-			checkAuth();
-		} catch (error) {
-			toast.error("Something went wrong", {
-				description:
-					error instanceof Error ? error.message : "Internal server error",
+			const response = await fetch(`${baseURL}/api/admin/update-user`, {
+				method: "POST",
+				credentials: "include",
+				headers: {
+					"Content-Type": "application/json",
+				},
+				body: JSON.stringify({
+					userId: user.id,
+					username,
+					role,
+					balance,
+				}),
 			});
+
+			if (!response.ok) {
+				throw new Error("Failed to update user");
+			}
+
+			toast.success("User updated successfully");
+			setOpen(false);
+		} catch (error) {
+			toast.error("Failed to update user");
 		}
 	};
 
 	return (
-		<Dialog open={open} onOpenChange={setOpen}>
-			<DialogTrigger
-				className={cn(buttonVariants({ variant: "ghost" }), "w-full")}
-			>
-				Update user
-			</DialogTrigger>
-			<DialogContent>
-				<DialogHeader>
-					<DialogTitle>Create a new user</DialogTitle>
-				</DialogHeader>
-				<div className="grid gap-4">
-					<div className="grid gap-2">
-						<Label htmlFor="name">Name</Label>
-						<Input
-							id="name"
-							name="name"
-							value={`${user.firstName} ${user.lastName || ""}`}
-							readOnly
-						/>
-					</div>
-					<form onSubmit={updateRole} className="grid gap-2">
-						<Label>User role</Label>
-						<div className="flex items-center justify-between">
-							<div className="flex items-center gap-4">
-								<Badge
-									onClick={() => setRole("admin")}
-									variant={role === "admin" ? "default" : "outline"}
-									className="cursor-pointer"
-								>
-									Admin
-								</Badge>
-								<Badge
-									onClick={() => setRole("user")}
-									variant={role === "user" ? "default" : "outline"}
-									className="cursor-pointer"
-								>
-									User
-								</Badge>
-							</div>
-							<Submit>Save</Submit>
+		<div className="flex items-center gap-2">
+			<Dialog open={open} onOpenChange={setOpen}>
+				<DialogTrigger asChild>
+					<Button variant="ghost" size="icon">
+						<Pencil className="size-4" />
+					</Button>
+				</DialogTrigger>
+				<DialogContent>
+					<DialogHeader>
+						<DialogTitle>Edit user</DialogTitle>
+						<DialogDescription>
+							Make changes to the user's profile here. Click save when you're
+							done.
+						</DialogDescription>
+					</DialogHeader>
+					<form onSubmit={handleSubmit} className="space-y-4">
+						<div className="space-y-2">
+							<Label htmlFor="username">Username</Label>
+							<Input
+								id="username"
+								name="username"
+								defaultValue={user.username ?? ""}
+							/>
+						</div>
+						<div className="space-y-2">
+							<Label htmlFor="role">Role</Label>
+							<Select name="role" defaultValue={user.role}>
+								<SelectTrigger>
+									<SelectValue placeholder="Select a role" />
+								</SelectTrigger>
+								<SelectContent>
+									<SelectItem value="user">User</SelectItem>
+									<SelectItem value="admin">Admin</SelectItem>
+								</SelectContent>
+							</Select>
+						</div>
+						<div className="space-y-2">
+							<Label htmlFor="balance">Balance</Label>
+							<Input
+								type="number"
+								id="balance"
+								name="balance"
+								defaultValue={user.balance}
+							/>
+						</div>
+						<div className="flex justify-end">
+							<Button type="submit">Save changes</Button>
 						</div>
 					</form>
-				</div>
-			</DialogContent>
-		</Dialog>
+				</DialogContent>
+			</Dialog>
+
+			<AlertDialog>
+				<AlertDialogTrigger asChild>
+					<Button variant="ghost" size="icon">
+						<Trash className="size-4" />
+					</Button>
+				</AlertDialogTrigger>
+				<AlertDialogContent>
+					<AlertDialogHeader>
+						<AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+						<AlertDialogDescription>
+							This action cannot be undone. This will permanently delete the
+							user's account and remove their data from our servers.
+						</AlertDialogDescription>
+					</AlertDialogHeader>
+					<AlertDialogFooter>
+						<AlertDialogCancel>Cancel</AlertDialogCancel>
+						<AlertDialogAction onClick={onDelete}>Delete</AlertDialogAction>
+					</AlertDialogFooter>
+				</AlertDialogContent>
+			</AlertDialog>
+		</div>
 	);
 }
