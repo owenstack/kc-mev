@@ -20,7 +20,6 @@
         "@tanstack/react-query": "^5.69.0",
         "@tanstack/react-router": "^1.114.27",
         "@tanstack/react-table": "^8.21.3",
-        "@telegram-auth/react": "^1.0.4",
         "@twa-dev/sdk": "^8.0.2",
         "class-variance-authority": "^0.7.1",
         "clsx": "^2.1.1",
@@ -469,8 +468,6 @@
     "@tanstack/table-core": ["@tanstack/table-core@8.21.3", "", {}, "sha512-ldZXEhOBb8Is7xLs01fR3YEc3DERiz5silj8tnGkFZytt1abEvl/GhUmCE0PMLaMPTa3Jk4HbKmRlHmu+gCftg=="],
 
     "@tanstack/virtual-file-routes": ["@tanstack/virtual-file-routes@1.114.12", "", {}, "sha512-aR13V1kSE/kUkP4a8snmqvj82OUlR5Q/rzxICmObLCsERGfzikUc4wquOy1d/RzJgsLb8o+FiOjSWynt4T7Jhg=="],
-
-    "@telegram-auth/react": ["@telegram-auth/react@1.0.4", "", { "peerDependencies": { "react": ">=18" } }, "sha512-VPCIrA6h5+w69S1QvB/k2PphmAA9E8BSqEX4WMSE1P7KxexKl/VRdoTRKSsSx1/In94S+R7FufbjLrRMnEGEKg=="],
 
     "@twa-dev/sdk": ["@twa-dev/sdk@8.0.2", "", { "dependencies": { "@twa-dev/types": "^8.0.1" }, "peerDependencies": { "react": "^18.0.0 || ^19.0.0" } }, "sha512-Pp5GxnxP2blboVZFiM9aWjs4cb8IpW3x2jP3kLOMvIqy0jzNUTuFHkwHtx+zEvh/UcF2F+wmS8G6ebIA0XPXcg=="],
 

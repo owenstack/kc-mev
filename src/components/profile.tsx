@@ -1,10 +1,11 @@
 import { useAuth } from "@/lib/auth";
 import { baseURL } from "@/lib/constants";
+import { cn } from "@/lib/utils";
 import { Link } from "@tanstack/react-router";
-import { Settings } from "lucide-react";
+import { Loader2, Settings, User2 } from "lucide-react";
 import { toast } from "sonner";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
-import { Button } from "./ui/button";
+import { Button, buttonVariants } from "./ui/button";
 import {
 	DropdownMenu,
 	DropdownMenuContent,
@@ -23,16 +24,29 @@ export function Profile() {
 			});
 			window.location.reload();
 		} catch (error) {
-			toast.error("Failed to sign out");
+			toast.error("Failed to sign out", {
+				description:
+					error instanceof Error ? error.message : "Internal server error",
+			});
 		}
 	};
 
 	if (loading) {
-		return null;
+		return <Loader2 className="size-4 animate-spin" />;
 	}
 
 	if (!user) {
-		return <Button variant="outline">Connect wallet</Button>;
+		return (
+			<Link
+				to="/"
+				className={cn(
+					buttonVariants({ variant: "outline", size: "icon" }),
+					"rounded-full",
+				)}
+			>
+				<User2 className="size-6" />
+			</Link>
+		);
 	}
 
 	return (
