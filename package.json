@@ -1,0 +1,39 @@
+{
+    "name": "reactjs-template",
+    "private": true,
+    "version": "0.0.1",
+    "type": "module",
+    "homepage": "https://telegram-mini-apps.github.io/reactjs-template",
+    "scripts": {
+        "dev": "vite",
+        "build": "tsc -b && vite build",
+        "format": "biome check --write",
+        "preview": "vite preview"
+    },
+    "dependencies": {
+        "@t3-oss/env-core": "^0.13.4",
+        "@tailwindcss/vite": "^4.1.5",
+        "@telegram-apps/sdk-react": "^3.2.4",
+        "@telegram-apps/telegram-ui": "^2.1.8",
+        "@tonconnect/ui-react": "^2.1.0",
+        "eruda": "^3.4.1",
+        "lucide-react": "^0.507.0",
+        "react": "^18.3.1",
+        "react-dom": "^18.3.1",
+        "react-router-dom": "^6.30.0",
+        "tailwindcss": "^4.1.5"
+    },
+    "devDependencies": {
+        "@biomejs/biome": "1.9.4",
+        "@types/node": "^20.17.32",
+        "@types/react": "^18.3.20",
+        "@types/react-dom": "^18.3.7",
+        "@vitejs/plugin-react-swc": "^3.9.0",
+        "cross-env": "^7.0.3",
+        "globals": "^15.15.0",
+        "typescript": "^5.8.3",
+        "vite": "^6.3.4",
+        "vite-plugin-mkcert": "^1.17.8",
+        "vite-tsconfig-paths": "^5.1.4"
+    }
+}
