@@ -6,9 +6,7 @@ import {
 	isMiniAppDark,
 } from "@telegram-apps/sdk-react";
 import { AppRoot } from "@telegram-apps/telegram-ui";
-
 import { routes } from "@/navigation/routes";
-import { Navbar } from "./ui/navbar";
 
 export function App() {
 	const lp = useMemo(() => retrieveLaunchParams(), []);
@@ -26,7 +24,6 @@ export function App() {
 					))}
 					<Route path="*" element={<Navigate to="/" />} />
 				</Routes>
-				<Navbar />
 			</HashRouter>
 		</AppRoot>
 	);

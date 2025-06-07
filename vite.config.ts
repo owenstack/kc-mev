@@ -25,7 +25,13 @@ export default defineConfig({
 		target: "esnext",
 	},
 	publicDir: "./public",
+	assetsInclude: ["**/*.tgs"],
 	server: {
 		allowedHosts: [".ngrok-free.app"],
+		headers: {
+			"Cache-Control": "no-store, must-revalidate",
+			Pragma: "no-cache",
+			Expires: "0",
+		},
 	},
 });

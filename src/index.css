@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@plugin "daisyui";
 
 body {
   background: var(--tg-theme-secondary-bg-color, white);

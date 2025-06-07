@@ -5,6 +5,8 @@ import { InitDataPage } from "@/pages/InitDataPage";
 import { LaunchParamsPage } from "@/pages/LaunchParamsPage";
 import { ThemeParamsPage } from "@/pages/ThemeParamsPage";
 import { TONConnectPage } from "@/pages/TONConnectPage/TONConnectPage";
+import { HomePage } from "@/pages/home";
+import { OnboardingPage } from "@/pages/onboarding";
 
 interface Route {
 	path: string;
@@ -14,9 +16,11 @@ interface Route {
 }
 
 export const routes: Route[] = [
-	{ path: "/", Component: IndexPage },
+	{ path: "/", Component: OnboardingPage },
 	{ path: "/init-data", Component: InitDataPage, title: "Init Data" },
 	{ path: "/theme-params", Component: ThemeParamsPage, title: "Theme Params" },
+	{ path: "/home", Component: HomePage, title: "Welcome" },
+	{ path: "/onboarding", Component: OnboardingPage, title: "Get onboarded!" },
 	{
 		path: "/launch-params",
 		Component: LaunchParamsPage,
@@ -34,6 +38,7 @@ export const routes: Route[] = [
 				viewBox="0 0 56 56"
 				fill="none"
 			>
+				<title>Ton Connect</title>
 				<path
 					d="M28 56C43.464 56 56 43.464 56 28C56 12.536 43.464 0 28 0C12.536 0 0 12.536 0 28C0 43.464 12.536 56 28 56Z"
 					fill="#0098EA"
